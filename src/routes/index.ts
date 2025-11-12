@@ -1,24 +1,40 @@
-//import hono
 import { Hono } from "hono";
 
-//import middleware validateBody
+// Import Middlewares
 import { validateBody } from "../middlewares/validate.middleware";
+import { verifyToken } from "../middlewares/auth.middleware";
 
-//import schema auth
+// Import Schemas
 import { registerSchema, loginSchema } from "../schemas/auth.schema";
+import { createUserSchema, updateUserSchema } from "../schemas/user.schema";
 
-//import controller register
-import { register } from "../controllers/registerController";
+// Import Controllers
+import { AuthController } from "../controllers/authController";
+import {
+  getUsers,
+  createUser,
+  getUserById,
+  updateUser,
+  deleteUser,
+} from "../controllers/userController";
 
-//import controller login
-import { login } from "../controllers/loginController";
-
-//inistialize router
+// Initialize router
 const router = new Hono();
 
-//register route
-router.post("/register", validateBody(registerSchema), register);
-//login route
-router.post("/login", validateBody(loginSchema), login);
+// Auth Routes
+router.post("/register", validateBody(registerSchema), AuthController.register);
+router.post("/login", validateBody(loginSchema), AuthController.login);
+
+// Protected User Routes
+router.get("/users", verifyToken, getUsers);
+router.get("/users/:id", verifyToken, getUserById);
+router.put(
+  "/users/:id",
+  verifyToken,
+  validateBody(updateUserSchema),
+  updateUser
+);
+router.post("/users", verifyToken, validateBody(createUserSchema), createUser);
+router.delete("/users/:id", verifyToken, deleteUser);
 
 export const Routes = router;
