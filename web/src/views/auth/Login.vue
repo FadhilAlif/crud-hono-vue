@@ -12,20 +12,26 @@ const showToast = useToastService();
 const loginMutation = useLogin();
 
 // Variable Reactive
-const username = ref("");
-const password = ref("");
+// const username = ref("");
+// const password = ref("");
+const loginField = ref({ username: "", password: "" });
 const checked = ref(false);
+const fieldErrors = ref({ username: "", password: "" });
 
 const handleLogin = async () => {
-  if (!username.value || !password.value) {
+  fieldErrors.value = { username: "", password: "" };
+
+  // Validasi frontend tetap ada
+  const { username, password } = loginField.value;
+  if (!username || !password) {
     showToast.warn("Warning", "Please fill in all fields");
     return;
   }
 
   loginMutation.mutate(
     {
-      username: username.value,
-      password: password.value,
+      username: username,
+      password: password,
     },
     {
       onSuccess: (response) => {
@@ -44,20 +50,32 @@ const handleLogin = async () => {
       },
       onError: (error: any) => {
         console.log("Login error:", error);
-        console.log("Error response:", error.response);
-
         const errorData = error.response?.data;
-        let errorMessage = "Login failed";
 
-        if (errorData?.message) {
-          errorMessage = errorData.message;
-        } else if (errorData?.errors) {
-          // Handle validation errors
-          errorMessage = Object.values(errorData.errors).join(", ");
+        if (errorData?.errors) {
+          const { username, password } = errorData.errors;
+
+          if (username) {
+            fieldErrors.value.username = Array.isArray(username)
+              ? username[0]
+              : username;
+          }
+          if (password) {
+            fieldErrors.value.password = Array.isArray(password)
+              ? password[0]
+              : password;
+          }
+          showToast.warn("Login Failed", "Please check the errors below.");
+        } else if (errorData?.message) {
+          // --- KASUS: Ada error umum ---
+          // (Contoh: "Invalid credentials", "Server error")
+          // Tidak ada objek 'errors', jadi kita tampilkan di toast
+          showToast.error("Login Failed", errorData.message);
         } else if (error.message) {
-          errorMessage = error.message;
+          showToast.error("Network Error", error.message);
+        } else {
+          showToast.error("Error", "An unexpected error occurred.");
         }
-        showToast.error("Error", errorMessage);
       },
     }
   );
@@ -70,7 +88,8 @@ const handleLogin = async () => {
     class="bg-surface-50 flex items-center justify-center min-h-screen min-w-screen overflow-hidden"
   >
     <div class="flex flex-col items-center justify-center">
-      <div
+      <form
+        @submit.prevent="handleLogin"
         class="w-full bg-black/15 py-20 px-8 sm:px-20"
         style="border-radius: 53px"
       >
@@ -81,62 +100,79 @@ const handleLogin = async () => {
           <span class="text-muted-color font-medium">Sign in to continue</span>
         </div>
 
-        <div>
+        <div class="flex flex-col gap-2 mb-4">
           <label
-            for="username1"
-            class="block text-surface-900 text-xl font-medium mb-2"
+            for="username"
+            class="block text-surface-900 text-xl font-medium"
             >Username</label
           >
           <InputText
-            id="username1"
+            id="username"
             type="text"
             placeholder="Username"
-            class="w-full md:w-120 mb-8"
-            v-model="username"
-            @keyup.enter="handleLogin"
+            class="w-full"
+            v-model="loginField.username"
+            :invalid="!!fieldErrors.username"
           />
+          <small class="p-error text-red-500" v-if="fieldErrors.username">
+            {{ fieldErrors.username }}
+          </small>
+        </div>
 
+        <div class="flex flex-col gap-2 mb-4">
           <label
-            for="password1"
-            class="block text-surface-900 font-medium text-xl mb-2"
+            for="password"
+            class="block text-surface-900 font-medium text-xl"
             >Password</label
           >
           <Password
-            id="password1"
-            v-model="password"
+            id="password"
+            v-model="loginField.password"
             placeholder="Password"
             :toggleMask="true"
-            class="mb-4"
             fluid
             :feedback="false"
-            @keyup.enter="handleLogin"
+            :invalid="!!fieldErrors.password"
           ></Password>
-
-          <div class="flex items-center justify-between mt-2 mb-8 gap-8">
-            <div class="flex items-center">
-              <Checkbox
-                v-model="checked"
-                id="rememberme1"
-                binary
-                class="mr-2"
-              ></Checkbox>
-              <label for="rememberme1">Remember me</label>
-            </div>
-            <span
-              class="font-medium no-underline ml-2 text-right cursor-pointer text-primary"
-              >Forgot password?</span
-            >
-          </div>
-          <Button
-            label="Sign In"
-            type="button"
-            class="w-full"
-            @click="handleLogin"
-            :loading="loginMutation.isPending.value"
-            :disabled="loginMutation.isPending.value"
-          ></Button>
+          <small class="p-error text-red-500" v-if="fieldErrors.password">
+            {{ fieldErrors.password }}
+          </small>
         </div>
-      </div>
+
+        <div class="flex items-center justify-between mt-2 mb-8 gap-8">
+          <div class="flex items-center">
+            <Checkbox
+              v-model="checked"
+              id="rememberme1"
+              binary
+              class="mr-2"
+            ></Checkbox>
+            <label for="rememberme1">Remember me</label>
+          </div>
+          <span
+            class="font-medium no-underline ml-2 text-right cursor-pointer text-primary"
+            >Forgot password?</span
+          >
+        </div>
+
+        <Button
+          label="Sign In"
+          type="submit"
+          class="w-full"
+          :loading="loginMutation.isPending.value"
+          :disabled="loginMutation.isPending.value"
+        ></Button>
+
+        <div class="text-center mt-6">
+          <span class="text-muted-color">Don't have an account? </span>
+          <span
+            @click="router.push('/register')"
+            class="font-medium text-primary cursor-pointer hover:underline"
+          >
+            Register here
+          </span>
+        </div>
+      </form>
     </div>
   </div>
 </template>

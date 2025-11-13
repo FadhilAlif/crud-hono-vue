@@ -1,6 +1,5 @@
 <script setup lang="ts">
-import { Button } from 'primevue';
-
+import { Button } from "primevue";
 </script>
 
 <template>
@@ -29,7 +28,7 @@ import { Button } from 'primevue';
               style="height: 3.2rem; width: 3.2rem"
             >
               <i
-                class="pi pi-fw pi-exclamation-circle !text-2xl text-pink-500"
+                class="pi pi-fw pi-exclamation-circle text-2xl! text-pink-500"
               ></i>
             </div>
             <h1
@@ -41,7 +40,7 @@ import { Button } from 'primevue';
               >Requested resource is not available.</span
             >
             <img
-              src="/demo/images/error/asset-error.svg"
+              src="../../assets/images/error/asset-error.svg"
               alt="Error"
               class="mb-8"
               width="80%"

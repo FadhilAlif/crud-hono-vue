@@ -3,7 +3,7 @@ import { useAuthUser } from "../composables/useAuth";
 
 /**
  * Vue Router Configuration
- * 
+ *
  * Routes:
  * - / (Home) - Protected route, requires authentication
  * - /users - Protected route, requires authentication
@@ -11,7 +11,7 @@ import { useAuthUser } from "../composables/useAuth";
  * - /access-denied - Public access denied page
  * - /error - Public error page
  * - /* (catch all) - Redirects to error page
- * 
+ *
  * Meta fields:
  * - requiresAuth: true - Route requires user to be logged in
  * - guest: true - Route is only accessible to non-authenticated users
@@ -31,10 +31,18 @@ const router = createRouter({
       component: () => import("../views/Users.vue"),
       meta: { requiresAuth: true },
     },
+
+    // Authentication Routes
     {
       path: "/login",
       name: "Login",
       component: () => import("../views/auth/Login.vue"),
+      meta: { guest: true },
+    },
+    {
+      path: "/register",
+      name: "Register",
+      component: () => import("../views/auth/Register.vue"),
       meta: { guest: true },
     },
     {

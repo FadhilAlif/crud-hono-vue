@@ -39,7 +39,7 @@ import { Button } from "primevue";
               admins.</span
             >
             <img
-              src="/demo/images/access/asset-access.svg"
+              src="../../assets/images/access/asset-access.svg"
               alt="Access denied"
               class="mb-8"
               width="80%"
