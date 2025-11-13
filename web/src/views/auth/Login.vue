@@ -43,9 +43,7 @@ const handleLogin = async () => {
           Cookies.set("user", JSON.stringify(data.user));
           showToast.success("Success", response.message || "Login successful");
 
-          setTimeout(() => {
-            router.push({ name: "Home" });
-          }, 500);
+          router.push({ name: "Home" });
         }
       },
       onError: (error: any) => {
