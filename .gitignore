@@ -1,0 +1,11 @@
+# Root
+node_modules/
+
+# Backend
+api/node_modules/
+
+# Frontend
+web/node_modules/
+
+# Prisma
+api/prisma/generated/
