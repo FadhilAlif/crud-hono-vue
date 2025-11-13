@@ -1,4 +1,6 @@
-<script setup lang="ts"></script>
+<script setup lang="ts">
+import { Button } from "primevue";
+</script>
 
 <template>
   <div
@@ -44,9 +46,8 @@
             />
             <div class="col-span-12 mt-8 text-center">
               <Button
-                as="router-link"
                 label="Go to Dashboard"
-                to="/"
+                @click="$router.push('/')"
                 severity="warn"
               />
             </div>
