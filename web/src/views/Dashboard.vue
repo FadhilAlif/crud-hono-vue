@@ -13,7 +13,6 @@ const user = useAuthUser();
       <Card>
         <template #title>
           <div class="flex items-center gap-3">
-            <i class="pi pi-home text-primary"></i>
             <span>Welcome Back!</span>
           </div>
         </template>
@@ -34,7 +33,6 @@ const user = useAuthUser();
               <div
                 class="flex items-center gap-2 text-surface-500 dark:text-surface-400"
               >
-                <i class="pi pi-user"></i>
                 <span class="text-sm font-medium uppercase tracking-wide"
                   >Full Name</span
                 >
@@ -50,7 +48,6 @@ const user = useAuthUser();
               <div
                 class="flex items-center gap-2 text-surface-500 dark:text-surface-400"
               >
-                <i class="pi pi-at"></i>
                 <span class="text-sm font-medium uppercase tracking-wide"
                   >Username</span
                 >
@@ -66,7 +63,6 @@ const user = useAuthUser();
               <div
                 class="flex items-center gap-2 text-surface-500 dark:text-surface-400"
               >
-                <i class="pi pi-envelope"></i>
                 <span class="text-sm font-medium uppercase tracking-wide"
                   >Email Address</span
                 >
@@ -82,7 +78,6 @@ const user = useAuthUser();
               <div
                 class="flex items-center gap-2 text-surface-500 dark:text-surface-400"
               >
-                <i class="pi pi-id-card"></i>
                 <span class="text-sm font-medium uppercase tracking-wide"
                   >User ID</span
                 >

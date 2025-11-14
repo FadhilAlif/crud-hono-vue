@@ -15,3 +15,17 @@ export interface UsersResponse {
 export interface UserDetailResponse {
   data: User;
 }
+
+export interface CreateUserRequest {
+  name: string;
+  username: string;
+  email: string;
+  password: string;
+}
+
+export interface UpdateUserRequest {
+  name?: string;
+  username?: string;
+  email?: string;
+  password?: string;
+}

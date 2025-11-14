@@ -12,9 +12,15 @@ import {
 } from "primevue";
 import { useConfirm } from "primevue/useconfirm";
 import AppLayout from "../layouts/AppLayout.vue";
-import { useUsers, useDeleteUser } from "../composables/useUsers";
-import type { User } from "../types/user";
-import { Info, Trash } from "lucide-vue-next";
+import UserFormDialog from "../components/UserFormDialog.vue";
+import {
+  useUsers,
+  useDeleteUser,
+  useCreateUser,
+  useUpdateUser,
+} from "../composables/useUsers";
+import type { User, CreateUserRequest, UpdateUserRequest } from "../types/user";
+import { Edit, Info, Trash, UserPlus } from "lucide-vue-next";
 
 const router = useRouter();
 const confirm = useConfirm();
@@ -22,6 +28,12 @@ const confirm = useConfirm();
 // Data fetching
 const { data: usersData, isLoading, isError, error } = useUsers();
 const { mutate: deleteUser } = useDeleteUser();
+const { mutate: createUser, isPending: isCreating } = useCreateUser();
+const { mutate: updateUser, isPending: isUpdating } = useUpdateUser();
+
+// Dialog state
+const dialogVisible = ref(false);
+const selectedUser = ref<User | null>(null);
 
 // Search functionality
 const searchQuery = ref("");
@@ -47,12 +59,46 @@ const viewUserDetail = (user: User) => {
   router.push(`/users/${user.id}`);
 };
 
+// Open dialog for adding new user
+const openAddDialog = () => {
+  selectedUser.value = null;
+  dialogVisible.value = true;
+};
+
+// Open dialog for editing user
+const openEditDialog = (user: User) => {
+  selectedUser.value = user;
+  dialogVisible.value = true;
+};
+
+// Handle save (create or update)
+const handleSave = (data: CreateUserRequest | UpdateUserRequest) => {
+  if (selectedUser.value) {
+    // Update existing user
+    updateUser(
+      { id: selectedUser.value.id, data },
+      {
+        onSuccess: () => {
+          dialogVisible.value = false;
+          selectedUser.value = null;
+        },
+      }
+    );
+  } else {
+    // Create new user
+    createUser(data as CreateUserRequest, {
+      onSuccess: () => {
+        dialogVisible.value = false;
+      },
+    });
+  }
+};
+
 // Delete user with confirmation
 const confirmDelete = (user: User) => {
   confirm.require({
     message: `Are you sure you want to delete user "${user.name}"?`,
     header: "Delete Confirmation",
-    icon: "pi pi-exclamation-triangle",
     rejectLabel: "Cancel",
     acceptLabel: "Delete",
     rejectClass: "p-button-secondary",
@@ -79,6 +125,14 @@ const formatDate = (dateString?: string) => {
     <Toast />
     <ConfirmDialog />
 
+    <!-- User Form Dialog -->
+    <UserFormDialog
+      v-model:visible="dialogVisible"
+      :user="selectedUser"
+      :loading="isCreating || isUpdating"
+      @save="handleSave"
+    />
+
     <div class="space-y-6">
       <Card>
         <template #title>
@@ -89,15 +143,27 @@ const formatDate = (dateString?: string) => {
 
         <template #content>
           <!-- Search Bar -->
-          <div class="mb-4">
+          <div class="flex items-center justify-between mb-4">
             <span class="p-input-icon-left w-full md:w-96">
-              <i class="pi pi-search" />
               <InputText
                 v-model="searchQuery"
                 placeholder="Search users by name, email, or username..."
                 class="w-full"
               />
             </span>
+
+            <!-- Add User Button -->
+            <div class="flex items-center">
+              <Button
+                label="Add New User"
+                severity="success"
+                @click="openAddDialog"
+              >
+                <template #icon>
+                  <UserPlus class="w-5 h-5 mr-2" />
+                </template>
+              </Button>
+            </div>
           </div>
 
           <!-- Loading State -->
@@ -191,8 +257,9 @@ const formatDate = (dateString?: string) => {
 
             <Column header="Actions" style="width: 10%">
               <template #body="{ data }">
-                <div class="flex gap-2 items-center" @click.stop>
+                <div class="flex items-center" @click.stop>
                   <Button
+                    severity="info"
                     rounded
                     text
                     @click="viewUserDetail(data)"
@@ -201,7 +268,14 @@ const formatDate = (dateString?: string) => {
                     <Info class="w-6 h-6"
                   /></Button>
                   <Button
-                    icon="pi pi-trash"
+                    severity="warn"
+                    rounded
+                    text
+                    @click="openEditDialog(data)"
+                    v-tooltip.top="'Edit User'"
+                    ><Edit class="w-6 h-6"
+                  /></Button>
+                  <Button
                     severity="danger"
                     rounded
                     text

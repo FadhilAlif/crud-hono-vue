@@ -1,6 +1,11 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/vue-query";
 import Api from "../services/api";
-import type { User, UsersResponse, UserDetailResponse } from "../types/user";
+import type {
+  UsersResponse,
+  UserDetailResponse,
+  CreateUserRequest,
+  UpdateUserRequest,
+} from "../types/user";
 import { useToastService } from "./useToastService";
 
 // Fetch all users
@@ -49,13 +54,41 @@ export const useDeleteUser = () => {
   });
 };
 
+// Create user mutation
+export const useCreateUser = () => {
+  const queryClient = useQueryClient();
+  const { success, error: showError } = useToastService();
+
+  return useMutation({
+    mutationFn: async (data: CreateUserRequest) => {
+      const response = await Api.post("/users", data);
+      return response.data;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["users"] });
+      success("Success", "User created successfully");
+    },
+    onError: (error: any) => {
+      const errorMessage =
+        error.response?.data?.message || "Failed to create user";
+      showError("Error", errorMessage);
+    },
+  });
+};
+
 // Update user mutation
 export const useUpdateUser = () => {
   const queryClient = useQueryClient();
   const { success, error: showError } = useToastService();
 
   return useMutation({
-    mutationFn: async ({ id, data }: { id: number; data: Partial<User> }) => {
+    mutationFn: async ({
+      id,
+      data,
+    }: {
+      id: number;
+      data: UpdateUserRequest;
+    }) => {
       const response = await Api.put(`/users/${id}`, data);
       return response.data;
     },
@@ -65,10 +98,9 @@ export const useUpdateUser = () => {
       success("Success", "User updated successfully");
     },
     onError: (error: any) => {
-      showError(
-        "Error",
-        error.response?.data?.message || "Failed to update user"
-      );
+      const errorMessage =
+        error.response?.data?.message || "Failed to update user";
+      showError("Error", errorMessage);
     },
   });
 };
