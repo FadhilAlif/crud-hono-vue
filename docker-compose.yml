@@ -1,0 +1,40 @@
+version: "3.9"
+
+services:
+  db:
+    image: mariadb:10.6
+    container_name: crud-db
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: pass
+      MYSQL_DATABASE: hono_db
+    volumes:
+      - db_data:/var/lib/mysql
+    ports:
+      - "3306:3306"
+
+  backend:
+    build: ./api
+    container_name: crud-api
+    restart: always
+    depends_on:
+      - db
+    environment:
+      DATABASE_URL: "mysql://root:pass@db:3306/hono_db"
+      JWT_SECRET: "07994a7d152b113b62a5f680cdc069cd32c75a1a460e7fb4208e9e273a415f31"
+      PORT: 3000
+    ports:
+      - "3000:3000"
+    command: ["bun", "run", "src/index.ts"]
+
+  frontend:
+    build:
+      context: ./web
+      dockerfile: Dockerfile
+    container_name: crud-web
+    restart: always
+    ports:
+      - "80:80"
+
+volumes:
+  db_data:
