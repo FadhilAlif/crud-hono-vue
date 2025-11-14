@@ -11,6 +11,7 @@ export const getUsers = async (c: Context) => {
       select: {
         id: true,
         name: true,
+        username: true,
         email: true,
         createdAt: true,
         updatedAt: true,
@@ -118,6 +119,7 @@ export const getUserById = async (c: Context) => {
       select: {
         id: true,
         name: true,
+        username: true,
         email: true,
         createdAt: true,
         updatedAt: true,
