@@ -4,7 +4,7 @@ import { useRouter, useRoute } from "vue-router";
 import { Card, Button, Skeleton, Tag, Divider } from "primevue";
 import AppLayout from "../layouts/AppLayout.vue";
 import { useUser } from "../composables/useUsers";
-import { MailIcon, UserIcon } from "lucide-vue-next";
+import { UserIcon } from "lucide-vue-next";
 
 const router = useRouter();
 const route = useRoute();
