@@ -6,6 +6,11 @@ import Cookies from "js-cookie";
 import { useToastService } from "../../composables/useToastService";
 import { Button, Checkbox, InputText, Password, Toast } from "primevue";
 
+interface LoginField {
+  username: string;
+  password: string;
+}
+
 // Composables
 const router = useRouter();
 const showToast = useToastService();
@@ -14,9 +19,9 @@ const loginMutation = useLogin();
 // Variable Reactive
 // const username = ref("");
 // const password = ref("");
-const loginField = ref({ username: "", password: "" });
-const checked = ref(false);
-const fieldErrors = ref({ username: "", password: "" });
+const loginField = ref<LoginField>({ username: "", password: "" });
+const checked = ref<Boolean>(false);
+const fieldErrors = ref<LoginField>({ username: "", password: "" });
 
 const handleLogin = async () => {
   fieldErrors.value = { username: "", password: "" };
@@ -34,7 +39,7 @@ const handleLogin = async () => {
       password: password,
     },
     {
-      onSuccess: (response) => {
+      onSuccess: (response: any) => {
         console.log("Login success response:", response);
         const { data } = response;
 

@@ -1,35 +1,26 @@
 import { createRouter, createWebHistory } from "vue-router";
 import { useAuthUser } from "../composables/useAuth";
 
-/**
- * Vue Router Configuration
- *
- * Routes:
- * - / (Home) - Protected route, requires authentication
- * - /users - Protected route, requires authentication
- * - /login - Guest only route, redirects to home if already logged in
- * - /access-denied - Public access denied page
- * - /error - Public error page
- * - /* (catch all) - Redirects to error page
- *
- * Meta fields:
- * - requiresAuth: true - Route requires user to be logged in
- * - guest: true - Route is only accessible to non-authenticated users
- */
 const router = createRouter({
   history: createWebHistory(),
   routes: [
     {
       path: "/",
       name: "Home",
-      component: () => import("../views/Users.vue"),
-      meta: { requiresAuth: true },
+      component: () => import("../views/Dashboard.vue"),
+      meta: { requiresAuth: true, title: "Dashboard" },
     },
     {
       path: "/users",
       name: "Users",
       component: () => import("../views/Users.vue"),
-      meta: { requiresAuth: true },
+      meta: { requiresAuth: true, title: "Users" },
+    },
+    {
+      path: "/users/:id",
+      name: "UserDetail",
+      component: () => import("../views/UserDetail.vue"),
+      meta: { requiresAuth: true, title: "User Detail" },
     },
 
     // Authentication Routes

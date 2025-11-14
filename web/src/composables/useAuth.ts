@@ -1,11 +1,5 @@
 import Cookies from "js-cookie";
-
-interface User {
-  id: number;
-  name: string;
-  username: string;
-  email: string;
-}
+import type { User } from "../types/user";
 
 export const useAuthUser = (): User | null => {
   const user = Cookies.get("user");
