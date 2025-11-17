@@ -9,3 +9,27 @@ web/node_modules/
 
 # Prisma
 api/prisma/generated/
+
+# Backup files
+backups/
+*.sql
+*.sql.gz
+
+# Docker volumes data
+data/
+db_data/
+
+# Logs
+logs/
+*.log
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
