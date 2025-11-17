@@ -98,7 +98,7 @@ done
 
 # Check logs backend
 print_info "Memeriksa logs backend..."
-docker-compose -f docker-compose.prod.yml logs backend --tail=20
+docker-compose -f docker-compose.prod.yml logs --tail=20 backend
 
 echo ""
 print_success "Deployment selesai!"
