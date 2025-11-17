@@ -9,3 +9,34 @@ web/node_modules/
 
 # Prisma
 api/prisma/generated/
+
+# Environment files (IMPORTANT: Jangan commit ke Git!)
+.env
+.env.local
+.env.production
+.env.production.local
+api/.env
+
+# Backup files
+backups/
+*.sql
+*.sql.gz
+
+# Docker volumes data
+data/
+db_data/
+
+# Logs
+logs/
+*.log
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
