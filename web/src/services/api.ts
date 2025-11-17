@@ -2,7 +2,7 @@ import axios from "axios";
 import Cookies from "js-cookie";
 
 const BaseURL =
-  import.meta.env.VITE_API_URL || "http://167.172.78.35:3000/api/v1";
+  import.meta.env.VITE_API_URL || "https://crud-api.fadhildev.my.id/api/v1";
 
 const Api = axios.create({
   baseURL: BaseURL,
